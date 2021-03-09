@@ -5,7 +5,7 @@ require('./lib/song')
 require('./lib/artist')
 require('pry')
 also_reload('lib/**/*.rb')
-require("pg")
+require('pg')
 
 DB = PG.connect({:dbname => "record_store"})
 
@@ -92,21 +92,33 @@ end
 
 # Artists---------------------------------->
 get('/artists') do
-  @artists = Artist.sort()
+  @artists = Artist.all
   erb(:artists)
+end
+
+get('/artists/new') do
+  erb(:new_artist)
+end
+
+post('/artists') do
+  name = params[:artist_name]
+  artist = Artist.new({:name => name.gsub(/'/, "''"), :id => nil})
+  artist.save()
+  @artists = Artist.all()
+  erb(:artists)
+end
+
+post('/artists/:id/albums') do
+  @artist = Artist.find(params[:id].to_i())
+  album = Album.new({name: params[:album_name].gsub(/'/, "''"), :id => nil})
+  album.save()
+  @artist.update({album_name: params[:album_name]})
+  erb(:artist)
 end
 
 get('/artists/:id') do
   @artist = Artist.find(params[:id].to_i())
   erb(:artist)
-end
-
-post('/artists') do
-  name = params[:artist_name]
-  artist = Artist.new({:name => name, :id => nil})
-  artist.save()
-  @artists = Artist.sort()
-  erb(:artists)
 end
 
 patch('/artists/:id') do

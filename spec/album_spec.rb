@@ -51,12 +51,28 @@ describe '#Album' do
     it("updates an album by id") do
       album = Album.new({:name => "Giant Steps", :id => nil})
       album.save()
-      album.update("A Love Supreme")
+      album.update({:name => "A Love Supreme"})
       expect(album.name).to(eq("A Love Supreme"))
+    end
+    it('adds an artist to an album') do
+      artist = Artist.new({:name => "The Beatles", :id => nil})
+      artist.save
+      album = Album.new({:name => "Help!", :id => nil})
+      album.save
+      album.update({:artist_name => "The Beatles"})
+      expect(album.artists).to(eq([artist]))
     end
   end
 
   describe('#delete') do
+    it("deletes an album by id") do
+      album = Album.new({:name => "A Love Supreme", :id => nil})
+      album.save()
+      album2 = Album.new({:name => "Blue", :id => nil})
+      album2.save()
+      album.delete()
+      expect(Album.all).to(eq([album2]))
+    end
     it("deletes all songs belonging to a deleted album") do
       album = Album.new({:name => "A Love Supreme", :id => nil})
       album.save()
@@ -78,4 +94,5 @@ describe '#Album' do
       expect(album.songs).to(eq([song, song2]))
     end
   end
+
 end

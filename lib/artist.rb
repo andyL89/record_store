@@ -1,10 +1,10 @@
 class Artist
-  attr_reader :id #Our new save method will need reader methods.
+  attr_reader :id
   attr_accessor :name
 
-  def initialize(attributes) # We've added id as a second parameter.
+  def initialize(attributes)
     @name = attributes.fetch(:name)
-    @id = attributes.fetch(:id)  # We've added code to handle the id.
+    @id = attributes.fetch(:id)
   end
 
   def self.all
@@ -56,9 +56,9 @@ class Artist
     DB.exec("DELETE FROM artists WHERE id = #{@id};")
   end
 
-  def songs
-    Song.find_by_album(self.id)
-  end
+  # def songs
+  #   Song.find_by_album(self.id)
+  # end
 
   def self.sort
     returned_artists = DB.exec("SELECT * FROM artists ORDER BY name;")
