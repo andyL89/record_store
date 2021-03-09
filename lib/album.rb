@@ -62,4 +62,5 @@ class Album
     end
     albums
   end
+
 end

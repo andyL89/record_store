@@ -2,6 +2,7 @@ require('sinatra')
 require('sinatra/reloader')
 require('./lib/album')
 require('./lib/song')
+require('./lib/artist')
 require('pry')
 also_reload('lib/**/*.rb')
 require("pg")
@@ -87,4 +88,38 @@ delete('/albums/:id/songs/:song_id') do
   song.delete
   @album = Album.find(params[:id].to_i())
   erb(:album)
+end
+
+# Artists---------------------------------->
+get('/artists') do
+  @artists = Artist.sort()
+  erb(:artists)
+end
+
+get('/artists/:id') do
+  @artist = Artist.find(params[:id].to_i())
+  erb(:artist)
+end
+
+post('/artists') do
+  name = params[:artist_name]
+  artist = Artist.new({:name => name, :id => nil})
+  artist.save()
+  @artists = Artist.sort()
+  erb(:artists)
+end
+
+patch('/artists/:id') do
+  @artist = Artist.find(params[:id].to_i())
+  updates = params[:name]
+  @artist.update(updates)
+  @artists = Artist.all
+  erb(:artists)
+end
+
+delete('/artists/:id') do
+  @artist = Artist.find(params[:id].to_i())
+  @artist.delete()
+  @artists = Artist.all
+  erb(:artists)
 end
